@@ -416,7 +416,6 @@ class Task(abc.ABC):
 
         if cache_requests and cached_instances and not rewrite_requests_cache:
             cached_instances = cached_instances[:limit]
-
             flattened_instances = [instance for instance_group in cached_instances for instance in instance_group]
 
             self._instances = flattened_instances
@@ -1037,10 +1036,11 @@ class ConfigurableTask(Task):
                 dataset_kwargs.pop("create_link")
 
         if dataset_kwargs is not None and "load_from_disk" in dataset_kwargs and dataset_kwargs["load_from_disk"]:
-            dataset_kwargs.pop("load_from_disk")
+            print("LOADING FROM DISK HERE", dataset_kwargs, self.DATASET_PATH, self.DATASET_NAME)
+            # dataset_kwargs.pop("load_from_disk")
             # using local task in offline environment, need to process the online dataset into local format via
             # `ds = load_datasets("lmms-lab/MMMU")`
-            self.dataset = datasets.load_from_disk(path=self.DATASET_PATH, name=self.DATASET_NAME)
+            self.dataset = datasets.load_from_disk(dataset_path=self.DATASET_PATH)
         else:
             self.dataset = datasets.load_dataset(
                 path=self.DATASET_PATH,
