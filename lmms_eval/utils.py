@@ -92,6 +92,15 @@ def handle_arg_string(arg):
     except ValueError:
         return arg
 
+def is_serializable(obj):
+    """Check if an object is serializable with standard library pickle."""
+    try:
+        import pickle
+        # Try to serialize to a bytes object in memory
+        pickle.dumps(obj)
+        return True
+    except (pickle.PickleError, TypeError, AttributeError):
+        return False
 
 def handle_non_serializable(o):
     if isinstance(o, np.int64) or isinstance(o, np.int32):
