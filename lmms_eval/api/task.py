@@ -195,7 +195,7 @@ class TaskConfig(dict):
         "fewshot_delimiter",
         "fewshot_config",
         "num_fewshot",
-        "metric_list",
+        # "metric_list", # has functions
         "output_type",
         "generation_kwargs",
         "repeats",
@@ -206,7 +206,7 @@ class TaskConfig(dict):
         "model_specific_generation_kwargs",
         "model_specific_target_kwargs",
         ]):
-        hash_str = "".join((self.getattr(k) for k in keep_keys))
+        hash_str = "".join((str(getattr(self,k, "")) for k in keep_keys))
         return str(int(hashlib.sha256(hash_str.encode('utf-8')).hexdigest()[:8], 16))
 
 class Task(abc.ABC):
