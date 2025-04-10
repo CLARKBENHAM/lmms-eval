@@ -2,7 +2,8 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union, bool
+import pickle
 
 import numpy as np
 from loguru import logger
@@ -31,6 +32,12 @@ def remove_none_pattern(input_string: str) -> Tuple[str, bool]:
 
     return result, removed
 
+def is_serializable(o: Any) -> bool:
+    try:
+        pickle.dumps(o)
+        return True
+    except (pickle.PickleError, TypeError, AttributeError):
+        return False
 
 def _handle_non_serializable(o: Any) -> Union[int, str, list]:
     """Handle non-serializable objects by converting them to serializable types.
