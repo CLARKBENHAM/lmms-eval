@@ -25,6 +25,7 @@ from typing import (
     Tuple,
     Union,
 )
+import hashlib
 
 import datasets
 import numpy as np
@@ -177,6 +178,37 @@ class TaskConfig(dict):
                 cfg_dict[k] = str(v)
         return cfg_dict
 
+    def get_hash_id(self):
+        keep_keys = [
+        "task",
+        "dataset_path",
+        "dataset_name",
+        "dataset_kwargs",
+        "training_split",
+        "validation_split",
+        "test_split",
+        "fewshot_split",
+        "full_docs",
+        "process_results_use_image",
+        "process_docs",
+        "description",
+        "target_delimiter",
+        "fewshot_delimiter",
+        "fewshot_config",
+        "num_fewshot",
+        "metric_list",
+        "output_type",
+        "generation_kwargs",
+        "repeats",
+        "filter_list",
+        "should_decontaminate",
+        "doc_to_decontamination_query",
+        "lmms_eval_specific_kwargs",
+        "model_specific_generation_kwargs",
+        "model_specific_target_kwargs",
+        ]
+        hash_str = "".join((self.getattr(k) for k in keep_keys))
+        return str(int(hashlib.sha256(hash_str.encode('utf-8')).hexdigest()[:8], 16))
 
 class Task(abc.ABC):
     """A task represents an entire benchmark including its dataset, problems,
@@ -411,6 +443,7 @@ class Task(abc.ABC):
         cache_key += "-fewshot_as_multiturn" if fewshot_as_multiturn else ""
         cache_key += f"-system_prompt_hash{utils.hash_string(system_instruction)}" if system_instruction is not None else ""
         cache_key += f"-tokenizer{tokenizer_name}"
+        cache_key += f"-{self._config.get_hash_id()}" # if change part of task whole task should change
 
         cached_instances = load_from_cache(file_name=cache_key)
 
