@@ -114,7 +114,7 @@ class ExcludeSameSampler(ContextSampler):
 SAMPLER_REGISTRY = {
     "default": ContextSampler,
     "first_n": FirstNSampler,
-    'exclude_same', ExcludeSameSampler,
+    'exclude_same': ExcludeSameSampler,
 }
 
 
