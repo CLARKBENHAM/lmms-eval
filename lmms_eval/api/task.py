@@ -178,8 +178,7 @@ class TaskConfig(dict):
                 cfg_dict[k] = str(v)
         return cfg_dict
 
-    def get_hash_id(self):
-        keep_keys = [
+    def get_hash_id(self, keep_keys = [
         "task",
         "dataset_path",
         "dataset_name",
@@ -206,7 +205,7 @@ class TaskConfig(dict):
         "lmms_eval_specific_kwargs",
         "model_specific_generation_kwargs",
         "model_specific_target_kwargs",
-        ]
+        ]):
         hash_str = "".join((self.getattr(k) for k in keep_keys))
         return str(int(hashlib.sha256(hash_str.encode('utf-8')).hexdigest()[:8], 16))
 
