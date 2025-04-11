@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union, bool
+from typing import Any, Dict, Optional, Tuple, Union
 import pickle
 
 import numpy as np
