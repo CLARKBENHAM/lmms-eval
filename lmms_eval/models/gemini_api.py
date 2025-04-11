@@ -156,7 +156,7 @@ class GeminiAPI(lmms):
         pbar = tqdm(total=len(requests), disable=(self.rank != 0), desc="Model Responding")
 
         def get_uuid(task, split, doc_id):
-            return f"{task}___{split}___{doc_id}"
+            return f"{task}___{split}___{doc_id}__{task.config.get_hash_id()}"
 
         for contexts, gen_kwargs, doc_to_visual, doc_id, task, split in [reg.args for reg in requests]:
             if self.continual_mode and self.cache_mode == "resume":
