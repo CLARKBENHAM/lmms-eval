@@ -1,0 +1,7 @@
+include: extract_gdt.yaml
+task: "test_extract_gdt"              # unique name you pick
+# # 5 examples
+# dataset_path: "/data2/Users/clark/hadrian_vllm/data/new_hf_datasets/test-read_gdt_for_id_from_render-single_images-prompt6_claude_try_answers-1-50-singleturn"
+
+# #all of asem6
+dataset_path: "data/new_hf_datasets/asem6-read_gdt_for_id_from_render-single_images-prompt6_claude_try_answers-1-50-singleturn"
