@@ -1,6 +1,7 @@
 import os
 import asyncio
 from typing import Any, Dict
+from PIL import Image
 
 from loguru import logger as eval_logger
 from collections import defaultdict
@@ -33,16 +34,28 @@ def gdt_doc_to_visual(doc, lmms_eval_specific_kwargs=None):
     out = []
     for image_path in doc['image_paths']:
         if image_path not in seen:
-            try:
-                image_base64 = get_base64_image(image_path)
-            except:
-                image_base64 = get_base64_image("/data2/Users/clark/hadrian_vllm/" + image_path)
-            out += [{ "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/png;base64,{image_base64}",
-                            "detail": "high",
-                        }
-                    }]
+            # Expects list of RGB I think
+            # try:
+            #     image_base64 = get_base64_image(image_path)
+            # except:
+            #     image_base64 = get_base64_image("/data2/Users/clark/hadrian_vllm/" + image_path)
+            # out += [{ "type": "image_url",
+            #             "image_url": {
+            #                 "url": f"data:image/png;base64,{image_base64}",
+            #                 "detail": "high",
+            #             }
+            #         }]
+
+            if isinstance(image_path, str):
+                if "/data2/Users/clark/hadrian_vllm/" not in image_path:
+                    image_path = "/data2/Users/clark/hadrian_vllm/" + image_path
+                img = Image.open(image_path).convert("RGB")
+            elif hasattr(image_path, "convert"):
+                img = image_path.convert("RGB")
+            else:
+                raise ValueError("Unsupported type in image_paths: {}".format(type(image_path)))
+            out.append(img)
+
             seen[image_path]=True
     return out
 
