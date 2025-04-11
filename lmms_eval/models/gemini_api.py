@@ -41,7 +41,8 @@ class GeminiAPI(lmms):
         model_version: str = "gemini-1.5-pro",
         # modality: str = "image",
         timeout: int = 120,
-        continual_mode: bool = True,
+        # continual_mode: bool = True,
+        continual_mode: bool = False,
         response_persistent_folder: str = "./logs/gemini_persistent_folder",
         interleave: bool = False,
         # We will cache the Gemini API response in this path and use it for future requests
@@ -156,7 +157,8 @@ class GeminiAPI(lmms):
         pbar = tqdm(total=len(requests), disable=(self.rank != 0), desc="Model Responding")
 
         def get_uuid(task, split, doc_id):
-            return f"{task}___{split}___{doc_id}__{task.config.get_hash_id()}"
+            # TODO, don't have access to raw task obj here only str; want task.config.get_hash_id()
+            return f"{task}___{split}___{doc_id}"
 
         for contexts, gen_kwargs, doc_to_visual, doc_id, task, split in [reg.args for reg in requests]:
             if self.continual_mode and self.cache_mode == "resume":
