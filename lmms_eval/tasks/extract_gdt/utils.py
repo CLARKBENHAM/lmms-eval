@@ -93,7 +93,7 @@ def gdt_process_results(doc, results):
 
     prediction = results[0]  # single string from the model
     ground_truth = doc["ground_truth"]
-    print('proecss results', results, ground_truth, evaluate_answer(prediction, ground_truth))
+    print('proecss results', results, ground_truth, evaluate_answer(extract_answer(prediction), ground_truth))
 
     # Evaluate
     try:
