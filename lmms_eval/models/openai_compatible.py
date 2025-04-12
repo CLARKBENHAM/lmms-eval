@@ -32,8 +32,8 @@ class OpenAICompatible(lmms):
     def __init__(
         self,
         model_version: str = "grok-2-latest",
-        timeout: int = 120,
-        max_retries: int = 5,
+        timeout: int = 5,
+        max_retries: int = 3,
         max_size_in_mb: int = 20,
         continual_mode: bool = False,
         response_persistent_folder: str = None,
