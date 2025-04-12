@@ -10,6 +10,7 @@ from collections import defaultdict
 from hadrian_vllm.model_caller import call_model, get_base64_image
 from hadrian_vllm.evaluation import evaluate_answer, normalize_gdt, EASY_EVALUATION_MODE
 from hadrian_vllm.result_processor import extract_answer
+
 # Easy mode maybe later?
 # import hadrian_vllm.evaluation as eval_mod
 # eval_mod.EASY_EVALUATION_MODE = True
@@ -32,7 +33,7 @@ def gdt_doc_to_visual(doc, lmms_eval_specific_kwargs=None):
     # For now let's just pass back the local paths:
     seen = {}
     out = []
-    for image_path in doc['image_paths']:
+    for image_path in doc["image_paths"]:
         if image_path not in seen:
             # Expects list of RGB I think
             # try:
@@ -45,10 +46,10 @@ def gdt_doc_to_visual(doc, lmms_eval_specific_kwargs=None):
             #                 "detail": "high",
             #             }
             #         }]
-
+            seen[image_path] = True  # if expanding it it'll change
             if isinstance(image_path, str):
-                if "/data2/Users/clark/hadrian_vllm/" not in image_path:
-                    image_path = "/data2/Users/clark/hadrian_vllm/" + image_path
+                if "hadrian_vllm" not in image_path:
+                    image_path = os.path.expanduser("~/hadrian_vllm/" + image_path)
                 img = Image.open(image_path).convert("RGB")
             elif hasattr(image_path, "convert"):
                 img = image_path.convert("RGB")
@@ -56,9 +57,7 @@ def gdt_doc_to_visual(doc, lmms_eval_specific_kwargs=None):
                 raise ValueError("Unsupported type in image_paths: {}".format(type(image_path)))
             out.append(img)
 
-            seen[image_path]=True
     return out
-
 
 
 def gdt_doc_to_text(doc, lmms_eval_specific_kwargs=None):
@@ -67,11 +66,12 @@ def gdt_doc_to_text(doc, lmms_eval_specific_kwargs=None):
     If you have multi-turn data in doc["prompt"], you might store it or flatten it.
     """
     # If your prompt is a single big string, just do:
-    if isinstance(doc["messages"],str):
+    if isinstance(doc["messages"], str):
         return doc["messages"]
     else:
         # TODO format chat better
-        "\n".join([ f"{d['role']}: ```{d['content']}```" for d in doc["messages"]])
+        "\n".join([f"{d['role']}: ```{d['content']}```" for d in doc["messages"]])
+
 
 def gdt_doc_to_target(doc):
     """
@@ -83,6 +83,7 @@ def gdt_doc_to_target(doc):
     """
     return doc["ground_truth"]
 
+
 def gdt_process_results(doc, results):
     """
     Like 'mme_process_results' in the MME example.
@@ -93,7 +94,7 @@ def gdt_process_results(doc, results):
 
     prediction = results[0]  # single string from the model
     ground_truth = doc["ground_truth"]
-    print('proecss results', results, ground_truth, evaluate_answer(prediction, ground_truth))
+    print("proecss results", results, ground_truth, evaluate_answer(prediction, ground_truth))
 
     # Evaluate
     try:
@@ -108,9 +109,10 @@ def gdt_process_results(doc, results):
         "gdt_correctness": {
             "element_id": doc["element_id"],
             "assemlby_id": doc["assemlby_id"],
-            "score": score
+            "score": score,
         }
     }
+
 
 def gdt_aggregate_results(results):
     """
@@ -119,12 +121,12 @@ def gdt_aggregate_results(results):
     """
     total_score = 0.0
     n = len(results)
-    by_asem= defaultdict(lambda: {'n':0,'correct':0})
+    by_asem = defaultdict(lambda: {"n": 0, "correct": 0})
     for r in results:
         total_score += r["score"]  # each r is e.g. {"element_id": "...", "score": float}
-        by_asem[r['assemlby_id']]['n'] +=1
-        by_asem[r['assemlby_id']]['correct'] += r['score']
+        by_asem[r["assemlby_id"]]["n"] += 1
+        by_asem[r["assemlby_id"]]["correct"] += r["score"]
     if n == 0:
         return 0.0
-    print({k:v['correct']/max(1,v['n']) for k,v in by_asem.items()})
+    print({k: v["correct"] / max(1, v["n"]) for k, v in by_asem.items()})
     return (total_score / n) * 100.0
