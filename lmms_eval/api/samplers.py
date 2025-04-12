@@ -37,9 +37,7 @@ class ContextSampler:
                     + (
                         str(self.doc_to_target(doc)[0])
                         if type(self.doc_to_target(doc)) is list
-                        else self.doc_to_target(doc)
-                        if (self.config.doc_to_choice is None or type(self.doc_to_target(doc)) is str)
-                        else str(self.doc_to_choice(doc)[self.doc_to_target(doc)])
+                        else self.doc_to_target(doc) if (self.config.doc_to_choice is None or type(self.doc_to_target(doc)) is str) else str(self.doc_to_choice(doc)[self.doc_to_target(doc)])
                     )
                     for doc in selected_docs
                 ]
@@ -81,11 +79,11 @@ class ExcludeSameSampler(ContextSampler):
     from hadrian_vllm.prompt_generator import select_few_shot_examples
 
     def get_context(self, doc, num_fewshot):
-        """ Sample Random Docs, excluding from same page and asembly id; and asembly if possible.
-            Sampler doesn't get passed the current doc
+        """Sample Random Docs, excluding from same page and asembly id; and asembly if possible.
+        Sampler doesn't get passed the current doc
         """
         selected_docs = select_few_shot_examples(
-            "data/fsi_labels/Hadrian Vllm test case - Final Merge.csv", doc["metadata"]['eval_dir'], doc["image_paths"][-1], question_ids_count=1, n_shot_imgs=doc['n_shot_imgs'], eg_per_img=doc['eg_per_img']
+            "data/fsi_labels/Hadrian Vllm test case - Final Merge.csv", doc["metadata"]["eval_dir"], doc["image_paths"][-1], question_ids_count=1, n_shot_imgs=doc["n_shot_imgs"], eg_per_img=doc["eg_per_img"]
         )
 
         labeled_examples = (
@@ -97,9 +95,7 @@ class ExcludeSameSampler(ContextSampler):
                     + (
                         str(self.doc_to_target(doc)[0])
                         if type(self.doc_to_target(doc)) is list
-                        else self.doc_to_target(doc)
-                        if (self.config.doc_to_choice is None or type(self.doc_to_target(doc)) is str)
-                        else str(self.doc_to_choice(doc)[self.doc_to_target(doc)])
+                        else self.doc_to_target(doc) if (self.config.doc_to_choice is None or type(self.doc_to_target(doc)) is str) else str(self.doc_to_choice(doc)[self.doc_to_target(doc)])
                     )
                     for doc in selected_docs
                 ]
@@ -110,11 +106,10 @@ class ExcludeSameSampler(ContextSampler):
         return labeled_examples
 
 
-
 SAMPLER_REGISTRY = {
     "default": ContextSampler,
     "first_n": FirstNSampler,
-    'exclude_same': ExcludeSameSampler,
+    "exclude_same": ExcludeSameSampler,
 }
 
 

@@ -185,7 +185,7 @@ class Qwen2_5_VL_Interleave(lmms):
     def generate_until(self, requests: List[Instance]) -> List[str]:
         res = []
 
-        #def get_uuid(task, split, doc_id):
+        # def get_uuid(task, split, doc_id):
         #    return f"{task}___{split}___{doc_id}__{task.config.get_hash_id()}"
         def get_uuid(task, split, doc_id):
             return f"{task}___{split}___{doc_id}"
