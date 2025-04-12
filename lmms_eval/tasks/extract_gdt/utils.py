@@ -70,7 +70,7 @@ def gdt_doc_to_text(doc, lmms_eval_specific_kwargs=None):
         return doc["messages"]
     else:
         # TODO format chat better
-        "\n".join([f"{d['role']}: ```{d['content']}```" for d in doc["messages"]])
+        return "\n".join([f"{d['role']}: ```{d['content']}```" for d in doc["messages"]])
 
 
 def gdt_doc_to_target(doc):
