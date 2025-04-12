@@ -1,0 +1,3 @@
+include: extract_gdt.yaml
+dataset_path: "/data2/Users/clark/hadrian_vllm/data/new_hf_datasets/read_gdt_for_id_from_render-single_images-prompt6_claude_try-1-5-multiturn"
+task: "extract_gdt_1_5__single"
