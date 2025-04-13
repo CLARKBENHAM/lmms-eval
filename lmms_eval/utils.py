@@ -954,8 +954,8 @@ class Collator:
             cov[ind] = True
 
         if not all(cov):
-            eval_logger.error("Incomplete output in get_original: %s", cov)
-            eval_logger.info(self.reorder_indices, newarr, res, cov)
+            eval_logger.error(f"Incomplete output in get_original: {cov!r}")
+            eval_logger.info(f"{self.reorder_indices!r}, {newarr!r}, {res!r}")
         assert all(cov)
 
         return res
