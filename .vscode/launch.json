@@ -1,0 +1,226 @@
+{
+    "configurations": [
+        {
+            "name": "lmms_eval: Custom Model",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/data2/Users/clark/lmms-eval/lmms_eval",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--model", "${input:modelType}",
+                "--model_args", "${input:modelArgs}",
+                "--tasks", "${input:tasks}",
+                "--batch_size", "1",
+                "--log_samples",
+                // "--log_samples_suffix", "${input:logSuffix}",
+                "--log_samples_suffix", "debug_custom_run",
+                "--output_path", "./logs/",
+                // "--device",
+            ],
+            "python": "${command:python.interpreterPath}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "5,6,7"
+            }
+        },
+        {
+            "name": "lmms: llava test_extract_gdt",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/data2/Users/clark/lmms-eval/lmms_eval",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--model", "llava",
+                //"--model_args", "pretrained=lmms-lab/llama3-llava-next-8b,conv_template=llava_llama_3,image_aspect_ratio=highres",
+                "--model_args", "pretrained=lmms-lab/llama3-llava-next-8b,conv_template=llava_llama_3",
+                "--tasks", "test_extract_gdt",
+                //"--tasks", "extract_gdt_3_50_answer_multiturn",
+                "--batch_size", "8",
+                "--log_samples",
+                "--log_samples_suffix", "llava_next",
+                "--output_path", "./logs/",
+                "--device", "cuda"
+            ],
+            "python": "${command:python.interpreterPath}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "7"
+            }
+        },
+        {
+            "name": "lmms: ai2d with llava",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/data2/Users/clark/lmms-eval/lmms_eval",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--model", "llava",
+                // "--model_args", "pretrained=lmms-lab/llama3-llava-next-8b,conv_template=llava_llama_3,image_aspect_ratio=highres",
+                "--model_args", "pretrained=lmms-lab/llama3-llava-next-8b,conv_template=llava_llama_3",
+                "--tasks", "ai2d",
+                "--batch_size", "8",
+                "--log_samples",
+                "--log_samples_suffix", "llava_next",
+                "--output_path", "./logs/",
+                "--device", "cuda"
+            ],
+            "python": "${command:python.interpreterPath}",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "7"
+            }
+        },
+        {
+            "name": "lmms: extract_gdt",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "../lmms-eval/lmms_eval",
+            //"module": "lmms-eval.lmms_eval",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--model", "openai_compatible",
+                "--model_args", "model_version=gpt-4o",
+                "--tasks",  "test_extract_gdt",
+                "--batch_size", "1",
+                "--log_samples",
+                "--log_samples_suffix", "new_run",
+                "--output_path", "./logs/",
+                "--verbosity=DEBUG",
+                "--use_cache", "../lmms-eval/cache",
+                "--cache_requests", "true",
+            ],
+            "python": "${command:python.interpreterPath}", // works since selected
+             "env": {
+                "CUDA_VISIBLE_DEVICES": "7",
+            }
+        },
+        {
+            "name": "Python: Local Model",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/hadrian_vllm/main.py",
+            //"module": "hadrian_vllm.main",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--csv", "data/fsi_labels/Hadrian Vllm test case - Final Merge.csv",
+                // "--eval_dir", "data/eval_on/single_images/",
+                "--eval_dir", "data/eval_on/asem_6_single_images/",
+                "--n_element_ids", "1",
+                "--num_completions", "1",
+                "--multiturn",
+                "--eval_all",
+                "--local",
+                "--prompt", "data/prompts/prompt6_claude_try.txt",
+                // "--model", "google/gemma-3-4b-it-qat-q4_0-gguf", can't use gguf with clip
+                "--model", "Qwen/Qwen2.5-VL-7B-Instruct",
+                "--n_shot_imgs", "1",
+                "--eg_per_img", "50",
+            ],
+            // "python": "/data2/Users/clark/miniconda3/envs/py_3d_cad/bin/python", // works, hardcoded
+            // "python": "${userHome}/miniconda3/envs/py_3d_cad/bin/python" // works
+            "python": "${command:python.interpreterPath}", // works since selected
+             "env": {
+                "CUDA_VISIBLE_DEVICES": "7",
+            }
+        },
+        {
+            "name": "Python: main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/hadrian_vllm/main.py",
+            // "console": "integratedTerminal",
+            "console": "internalConsole",
+            "justMyCode": false,
+            "args": [
+                "--prompt",
+                "data/prompts/prompt6_claude_try_answers.txt",
+                "--csv",
+                "data/fsi_labels/Hadrian Vllm test case - Final Merge.csv",
+                "--eval_dir",
+                "data/eval_on/single_images/",
+                "--model",
+                "gemini-2.0-flash-001",
+                "--n_shot_imgs",
+                "21",
+                "--eg_per_img",
+                "50",
+                "--n_element_ids",
+                "1",
+                "--num_completions",
+                "1",
+                "--multiturn",
+                "--eval_all",
+                "--eval-easy"
+            ]
+            // "args": [
+            //     "--prompt",
+            //     "data/prompts/prompt4.txt",
+            //     "--csv",
+            //     "data/fsi_labels/Hadrian Vllm test case - Final Merge.csv",
+            //     "--eval_dir",
+            //     "data/eval_on/single_images/",
+            //     "--model",
+            //     "gemini-2.0-flash-001",
+            //     //"o1",
+            //     "--n_shot_imgs",
+            //     "2",
+            //     "--eg_per_img",
+            //     "4",
+            //     "--n_element_ids",
+            //     "1",
+            //     "--num_completions",
+            //     "1",
+            //     "--eval_all"
+            //     //Add any other args here if needed
+            // ]
+        },
+        {
+            "name": "Python: Current File (from repo root)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}",
+            //"console": "internalConsole",
+            "console": "internalConsole",
+            // "args": ["&&", "exit"], // so closes after finished
+            "env": {
+                //"PYTHONPATH": "${workspaceFolder}/hadrian_vllm:${env:PYTHONPATH}"
+                "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}"
+            }
+        }
+    ],
+    "inputs": [
+        // lmms-eval inputs
+        {
+            "id": "modelType",
+            "type": "promptString",
+            "description": "Model type (e.g., llava, openai_compatible)",
+            // "default": "llava"
+            // "default": "openai_compatible"
+            "default": "gemini_api"
+        },
+        {
+            "id": "modelArgs",
+            "type": "promptString",
+            "description": "Model arguments (comma-separated key=value pairs)",
+            // "default": "pretrained=lmms-lab/llama3-llava-next-8b,conv_template=llava_llama_3"
+            // "default": "model=gpt-4o"
+            "default": "model_version=gemini-2.0-flash"
+        },
+        {
+            "id": "tasks",
+            "type": "promptString",
+            "description": "Tasks to evaluate",
+            // "default": "ai2d"
+            "default": "test_extract_gdt"
+        },
+        {
+            "id": "logSuffix",
+            "type": "promptString",
+            "description": "Log samples suffix",
+            "default": "debug_custom_run"
+        }
+    ]
+}
